@@ -1,0 +1,15 @@
+FROM centos:6.8
+
+MAINTAINER "Sergey Zolotorev" <sergey.zolotorev@dsr-company.com>
+
+RUN yum -y update && \
+	yum -y install \
+	gcc
+
+WORKDIR /usr/local/src
+
+COPY . ./
+
+RUN make -C linux clean all
+
+ENTRYPOINT ["linux/ccextractor"]

@@ -1,0 +1,7 @@
+version: '2'
+
+services:
+  ccextractor.centos.6.8:
+    build:
+      context: .
+      dockerfile: Dockerfile.centos.6.8
