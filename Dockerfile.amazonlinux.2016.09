@@ -2,14 +2,20 @@ FROM amazonlinux:2016.09
 
 MAINTAINER "Sergey Zolotorev" <sergey.zolotorev@dsr-company.com>
 
-RUN yum -y update && \
-	yum -y install \
-	gcc
+RUN yum -y install \
+		bzip2 \
+		diffutils \
+		gcc \
+		yasm && \
+	curl https://ffmpeg.org/releases/ffmpeg-snapshot.tar.bz2 | tar -jx && \
+	pushd ffmpeg && \
+		./configure --libdir=/usr/lib64 --prefix=/usr && \
+		make install && \
+	popd && \
+	rm -rf ffmpeg
 
-WORKDIR /usr/local/src
+COPY . /usr/src/ccextractor/
 
-COPY . ./
+RUN make ENABLE_FFMPEG=yes -C /usr/src/ccextractor/linux clean all install
 
-RUN make -C linux clean all
-
-ENTRYPOINT ["linux/ccextractor"]
+CMD ["ccextractor"]
